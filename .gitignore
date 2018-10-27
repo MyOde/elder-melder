@@ -1,0 +1,5 @@
+.stack-work/
+# For now using the cabal file... Will see if I'm lazy enough or not
+# to migrate the FFI needed stuff to package.yaml
+# elder-melder.cabal
+*~

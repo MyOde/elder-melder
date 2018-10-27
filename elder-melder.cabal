@@ -1,0 +1,76 @@
+-- This file has been generated from package.yaml by hpack version 0.28.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 8879532b05af0cdf67619dac58be07ea6b93b059124523379d5758479b1043cb
+
+name:           elder-melder
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/elder-melder#readme>
+homepage:       https://github.com/githubuser/elder-melder#readme
+bug-reports:    https://github.com/githubuser/elder-melder/issues
+author:         MyOde
+maintainer:     example@example.com
+copyright:      2018 MyOde
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/elder-melder
+
+library
+  exposed-modules:
+      Lib
+      Xcomposite
+  other-modules:
+      Paths_elder_melder
+  hs-source-dirs:
+      src
+  build-depends:
+      X11
+    , X11-xfixes
+    , X11-xft
+    , mtl
+    , base >=4.7 && <5
+  default-language: Haskell2010
+  extra-libraries:
+      Xcomposite
+  ghc-options: -fno-warn-unused-binds -Wall -funbox-strict-fields
+
+executable elder-melder-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_elder_melder
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      X11
+    , X11-xfixes
+    , X11-xft
+    , mtl
+    , base >=4.7 && <5
+    , elder-melder
+  default-language: Haskell2010
+  extra-libraries:
+      Xcomposite
+
+test-suite elder-melder-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_elder_melder
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      X11
+    , base >=4.7 && <5
+    , elder-melder
+  default-language: Haskell2010

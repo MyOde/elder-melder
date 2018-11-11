@@ -29,7 +29,6 @@ nix:
     , xorg.libXcomposite
     , xorg.libXfixes
     , xorg.libXft
-    , pkgconfig
     ]
 
 # User packages to be built.
@@ -51,14 +50,21 @@ packages:
     git: https://github.com/MyOde/haskell-x11-xfixes.git
     commit: a93da07197110bf2f383823452c7cd368b4286de
   extra-dep: true
+# - location:
+#     git: https://github.com/arsenm/Clutterhs.git
+#     commit: ad3390895264c46906b5d3d954c4b04b04d96b1d
+#     subdirs:
+#       - clutter
+#       - cogl
+#   extra-dep: true
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
-# extra-deps: []
-
+# extra-deps:
 # Override default flag values for local packages and extra-deps
 # flags: {}
 
+# allow-newer: true
 # Extra package databases containing global packages
 # extra-package-dbs: []
 

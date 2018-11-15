@@ -29,6 +29,7 @@ nix:
     , xorg.libXcomposite
     , xorg.libXfixes
     , xorg.libXft
+    , xorg.libXdamage
     ]
 
 # User packages to be built.
@@ -49,6 +50,10 @@ packages:
 - location:
     git: https://github.com/MyOde/haskell-x11-xfixes.git
     commit: a93da07197110bf2f383823452c7cd368b4286de
+  extra-dep: true
+- location:
+    git: https://github.com/mkloczko/derive-storable.git
+    commit: fea992731619467963641c288d56caf96b035c4b
   extra-dep: true
 # - location:
 #     git: https://github.com/arsenm/Clutterhs.git

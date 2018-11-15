@@ -3,7 +3,8 @@ module Lib where
 import Control.Concurrent (threadDelay)
 import           Control.Monad.Reader      (liftIO, runReaderT)
 import           Graphics.X11.Types        (substructureNotifyMask)
-import           Graphics.X11.Xlib.Context (createGC, freeGC, setForeground)
+import           Graphics.X11.Xlib.Context (createGC, freeGC, setBackground,
+                                            setForeground)
 import           Graphics.X11.Xlib.Display (blackPixel, closeDisplay,
                                             defaultColormap, defaultGC,
                                             defaultRootWindow, defaultScreen,
@@ -15,13 +16,15 @@ import Graphics.X11.Xlib.Event (flush, selectInput)
 import           Graphics.X11.Xlib.Extras  (Event (ConfigureEvent, ExposeEvent, KeyEvent),
                                             getEvent)
 import           Graphics.X11.Xlib.Image   (destroyImage)
-import           Graphics.X11.Xlib.Misc    (getGeometry)
+import           Graphics.X11.Xlib.Misc    (drawRectangle, getGeometry)
 import           Meld                      (getRootImage, imageDraw)
 import           Xcomposite                (compositeRedirectAutomatic,
                                             compositeRedirectManual,
                                             getOverlayWindow,
                                             redirectSubwindows,
                                             releaseOverlayWindow)
+-- import           Xdbe                      (queryExtension)
+import           Xdbe
 import           XDefaultsTransformer      (XDefaultValues (..),
                                             XDefaultsT (runDefaults),
                                             askBlackPixel, askColormap,
@@ -39,11 +42,38 @@ proggo = do
   whiteP <- askWhitePixel
   -- liftIO $ redirectSubwindows display rootWindow compositeRedirectAutomatic
   -- liftIO $ selectInput display rootWindow substructureNotifyMask
+  backgroundBuffer <- liftIO $ allocateBackBufferName display rootWindow copied
+  newGC <- liftIO $ createGC display backgroundBuffer
+  liftIO $ setForeground display newGC blackP
+  liftIO $ setBackground display newGC blackP
+  liftIO $ drawRectangle display backgroundBuffer newGC 100 100 500 500
+
   liftIO $ flush display
-  newGC <- liftIO $ createGC display rootWindow
-  image <- getRootImage
-  imageDraw rootWindow image newGC
-  liftIO $ destroyImage image
+  liftIO $ print "UUUUUUU"
+  liftIO $ swapBuffers display $ [SwapInfo rootWindow background]
+  liftIO $ print "BBBBBBBBBBBBbUUUUUUU"
+  liftIO $ flush display
+  liftIO $ print "CCCCCCCCCCBBBBBBBBBBBBbUUUUUUU"
+
+  liftIO $ threadDelay 5000000
+
+  liftIO $ print "DDDDDDDDDDDdCCCCCCCCCCBBBBBBBBBBBBbUUUUUUU"
+
+  liftIO $ swapBuffers display $ [SwapInfo rootWindow copied]
+  liftIO $ flush display
+
+  liftIO $ threadDelay 5000000
+
+  liftIO $ swapBuffers display $ [SwapInfo rootWindow copied]
+  liftIO $ flush display
+
+  liftIO $ threadDelay 500000
+
+  liftIO $ swapBuffers display $ [SwapInfo rootWindow copied]
+  liftIO $ flush display
+  -- image <- getRootImage
+  -- imageDraw rootWindow image newGC
+  -- liftIO $ destroyImage image
 
 mainish :: IO ()
 mainish = do
@@ -65,3 +95,27 @@ getDefaults = do
     (defaultVisual defaultDisplay screenNumber)
     (blackPixel defaultDisplay screenNumber)
     (whitePixel defaultDisplay screenNumber)
+
+doAllocateBackBufferName' = do
+  display <- askDisplay
+  root <- askRootWindow
+  liftIO $ allocateBackBufferName display root background
+
+doAllocateBackBufferName =
+  getDefaults >>= runReaderT (runDefaults doAllocateBackBufferName')
+
+doGetVisualInfo' = do
+  display <- askDisplay
+  root <- askRootWindow
+  liftIO $ getVisualInfo display [root] 1
+
+doGetVisualInfo =
+  getDefaults >>= runReaderT (runDefaults doGetVisualInfo')
+
+doQueryExtension' = do
+  display <- askDisplay
+  liftIO $ queryExtension display
+
+doQueryExtension =
+  getDefaults >>= runReaderT (runDefaults doQueryExtension')
+

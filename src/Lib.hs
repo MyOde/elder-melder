@@ -17,6 +17,7 @@ import           Graphics.X11.Xlib.Extras  (Event (ConfigureEvent, ExposeEvent, 
                                             getEvent)
 import           Graphics.X11.Xlib.Image   (destroyImage)
 import           Graphics.X11.Xlib.Misc    (drawRectangle, getGeometry)
+import           Graphics.X11.Xlib.Types   (MyImage (..))
 import           Meld                      (getRootImage, imageDraw)
 import           Xcomposite                (compositeRedirectAutomatic,
                                             compositeRedirectManual,
@@ -24,6 +25,7 @@ import           Xcomposite                (compositeRedirectAutomatic,
                                             redirectSubwindows,
                                             releaseOverlayWindow)
 -- import           Xdbe                      (queryExtension)
+import           Foreign.Storable.Generic  (GStorable, peek, poke)
 import           Xdbe
 import           XDefaultsTransformer      (XDefaultValues (..),
                                             XDefaultsT (runDefaults),
@@ -95,6 +97,13 @@ getDefaults = do
     (defaultVisual defaultDisplay screenNumber)
     (blackPixel defaultDisplay screenNumber)
     (whitePixel defaultDisplay screenNumber)
+
+doGetImageData' = do
+  image <- getRootImage
+  return image
+
+doGetImageData =
+  getDefaults >>= runReaderT (runDefaults doGetImageData')
 
 doAllocateBackBufferName' = do
   display <- askDisplay

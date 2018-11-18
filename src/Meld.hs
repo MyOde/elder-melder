@@ -10,10 +10,11 @@ import           Foreign.C.Types         (CChar (..), CUChar (..), CUInt (..),
 import           Foreign.Marshal.Alloc   (mallocBytes)
 import           Foreign.Ptr             ()
 import           Foreign.Storable        (sizeOf)
+import           Foreign.Storable.Generic (GStorable, peek, poke)
 import           Graphics.X11.Types      (Window, zPixmap)
 import           Graphics.X11.Xlib.Image (Image, createImage, getImage,
                                           putImage)
-import           Graphics.X11.Xlib.Types (GC)
+import           Graphics.X11.Xlib.Types  (GC, MyImage (..))
 import           XDefaultsTransformer    (XDefaultsT, askDisplay, askGc,
                                           askRootHeight, askRootWidth,
                                           askRootWindow, askVisual)
@@ -31,14 +32,15 @@ prettyHeight = 100
 prettyWidth = 100
 
 -- TODO Somehow merge this stuff in wherever You're using it
-getRootImage :: XDefaultsT Image
+getRootImage :: XDefaultsT MyImage
 getRootImage = do
   display <- askDisplay
   root <- askRootWindow
   width <- askRootWidth
   height <- askRootHeight
   image <- liftIO $ getImage display root 0 0 (CUInt width) (CUInt height) allPlanes zPixmap
-  return image
+  myImage <- liftIO $ peek image
+  return myImage
 
 -- TODO maybe try to replace the window type with a drawable?
 -- TODO The name does not fully represent the meaning

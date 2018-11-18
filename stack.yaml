@@ -30,6 +30,8 @@ nix:
     , xorg.libXfixes
     , xorg.libXft
     , xorg.libXdamage
+    , autoconf
+    , pkgconfig
     ]
 
 # User packages to be built.
@@ -55,6 +57,10 @@ packages:
     git: https://github.com/mkloczko/derive-storable.git
     commit: fea992731619467963641c288d56caf96b035c4b
   extra-dep: true
+- location:
+    git: https://github.com/MyOde/X11.git
+    commit: 5921031b1f4df14e9fb544b00f4950df7dadb835
+  extra-dep: true
 # - location:
 #     git: https://github.com/arsenm/Clutterhs.git
 #     commit: ad3390895264c46906b5d3d954c4b04b04d96b1d
@@ -66,6 +72,7 @@ packages:
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
 # extra-deps:
+# - archive: https://github.com/MyOde/X11/archive/1.8.0.0.tar.gz
 # Override default flag values for local packages and extra-deps
 # flags: {}
 

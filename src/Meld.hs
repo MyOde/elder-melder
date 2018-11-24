@@ -8,7 +8,7 @@ import           Data.Int                ()
 import           Foreign.C.Types         (CChar (..), CUChar (..), CUInt (..),
                                           CULong)
 import           Foreign.Marshal.Alloc   (mallocBytes)
-import           Foreign.Ptr             ()
+import           Foreign.Ptr
 import           Foreign.Storable        (sizeOf)
 import           Foreign.Storable.Generic (GStorable, peek, poke)
 import           Graphics.X11.Types      (Window, zPixmap)
@@ -52,19 +52,22 @@ imageDraw drawable image gc = do
   liftIO $ putImage display drawable gc image 0 0 0 0 width height
 
 -- TODO Throw this out - this is rather dumb
-createPrettyImage :: XDefaultsT Image
-createPrettyImage = do
+createPrettyImage :: Ptr CChar -> XDefaultsT (Ptr MyImage)
+createPrettyImage dataz = do
   display <- askDisplay
   visual <- askVisual
-  dataPointer <- liftIO $ mallocBytes $ prettyWidth * prettyHeight * sizeOfCUChar
-  liftIO $ createImage
+  -- dataPointer <- liftIO $ mallocBytes $ prettyWidth * prettyHeight * sizeOfCUChar
+  image <- liftIO $ createImage
     display
     visual
     8
     zPixmap
     0
-    dataPointer
+    -- dataPointer
+    dataz
     (fromIntegral prettyWidth)
     (fromIntegral prettyHeight)
     8
     (fromIntegral $ prettyWidth * sizeOfCChar)
+
+  return $ image
